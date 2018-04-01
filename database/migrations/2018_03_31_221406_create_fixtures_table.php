@@ -15,7 +15,19 @@ class CreateFixturesTable extends Migration
     {
         Schema::create('fixtures', function (Blueprint $table) {
             $table->increments('id');
+
+            $table->string('name');
+            $table->string('description', 250)->nullable();
+            $table->integer('id_tournament')->unsigned();
+
             $table->timestamps();
+
+            //Foreign Keys
+            $table->foreign('id_tournament')->references('id')->on('tournaments')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            
         });
     }
 

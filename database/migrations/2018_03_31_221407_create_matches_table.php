@@ -15,7 +15,25 @@ class CreateMatchesTable extends Migration
     {
         Schema::create('matches', function (Blueprint $table) {
             $table->increments('id');
+
+            $table->integer('home_team')->unsigned();
+            $table->integer('visitor_team')->unsigned();
+            $table->dateTime('date');
+            $table->integer('result')->default(99);
+            $table->integer('id_fixture')->unsigned();
+            
             $table->timestamps();
+
+            //Foreign Keys
+            $table->foreign('home_team')->references('id')->on('teams')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('visitor_team')->references('id')->on('teams')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('id_fixture')->references('id')->on('fixtures')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

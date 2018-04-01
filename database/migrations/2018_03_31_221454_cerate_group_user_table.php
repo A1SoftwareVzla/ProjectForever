@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CerateTeamTournamentTable extends Migration
+class CerateGroupUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,24 @@ class CerateTeamTournamentTable extends Migration
      */
     public function up()
     {
-        Schema::create('team_tournament', function (Blueprint $table) {
+        Schema::create('group_user', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('id_tournament')->unsigned();
-            $table->integer('id_team')->unsigned();
+            $table->integer('id_group')->unsigned();
+            $table->integer('id_user')->unsigned();
+            $table->integer('score')->unsigned();
+            $table->enum('administrador', ['SI', 'NO']);
 
             $table->timestamps();
 
             //Foreign Keys
-            $table->foreign('id_tournament')->references('id')->on('tournaments')
+            $table->foreign('id_group')->references('id')->on('groups')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('id_team')->references('id')->on('teams')
+            $table->foreign('id_user')->references('id')->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+
         });
     }
 
