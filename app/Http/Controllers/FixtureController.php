@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Fixture;
+use App\Tournament;
 use Illuminate\Http\Request;
+use App\Http\Requests\FixtureStoreRequest;
+use App\Http\Requests\FixtureUpdateRequest;
+
 
 class FixtureController extends Controller
 {
@@ -14,7 +18,9 @@ class FixtureController extends Controller
      */
     public function index()
     {
-        //
+        $fixtures = Fixture::orderBy('name','DESC')->paginate();
+        $tournaments = Tournament::orderBy('name', 'DESC')->pluck('name','id');
+        return view('admin.fixture.index')->with(compact('fixtures', 'tournaments'));
     }
 
     /**
@@ -33,9 +39,10 @@ class FixtureController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(FixtureStoreRequest $request)
+    {        
+        $fixture = Fixture::create($request->all());        
+        return redirect()->route('fixture.index')->with('info','fecha creada con éxito');
     }
 
     /**
@@ -57,7 +64,8 @@ class FixtureController extends Controller
      */
     public function edit(Fixture $fixture)
     {
-        //
+        $tournaments = Tournament::orderBy('name', 'DESC')->pluck('name','id');
+        return view('admin.fixture.edit')->with(compact('fixture', 'tournaments'));
     }
 
     /**
@@ -67,9 +75,11 @@ class FixtureController extends Controller
      * @param  \App\Fixture  $fixture
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Fixture $fixture)
+    public function update(FixtureUpdateRequest $request, Fixture $fixture)
     {
-        //
+        $fixture = Fixture::find($fixture->id);
+        $fixture->fill($request->all())->save();
+        return redirect()->route('fixture.edit', $fixture->id)->with('info','Fecha actualizada con éxito');
     }
 
     /**
@@ -80,6 +90,7 @@ class FixtureController extends Controller
      */
     public function destroy(Fixture $fixture)
     {
-        //
+        Fixture::find($fixture->id)->delete();
+        return redirect()->route('fixture.index')->with('info','fecha '.$fixture->name.' fué eliminada con éxito');    
     }
 }

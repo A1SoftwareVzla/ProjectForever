@@ -6,6 +6,8 @@ use App\Tournament;
 use App\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\TournamentUpdateRequest;
+use App\Http\Requests\TournamentStoreRequest;
 
 class TournamentController extends Controller
 {
@@ -37,7 +39,7 @@ class TournamentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TournamentStoreRequest $request)
     {
        // verificar si el short_name existe, si existe devolver error
         $tournament = Tournament::create($request->all());
@@ -64,7 +66,7 @@ class TournamentController extends Controller
      */
     public function show(Tournament $tournament)
     {
-        //
+        return view('admin.tournament.show')->with(compact('tournament'));
     }
 
     /**
@@ -86,7 +88,7 @@ class TournamentController extends Controller
      * @param  \App\Tournament  $tournament
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tournament $tournament)
+    public function update(TournamentUpdateRequest $request, Tournament $tournament)
     {
         $tournament = Tournament::find($tournament->id);
         $tournament->fill($request->all())->save();

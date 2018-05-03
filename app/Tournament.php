@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tournament extends Model
 {
     protected $fillable = [
-        'name', 'description', 'symbol', 'ímage',
+        'name', 'description', 'symbol', 'image',
     ];
     public function forecasts(){
         return $this->hasMany(Forecast::class);

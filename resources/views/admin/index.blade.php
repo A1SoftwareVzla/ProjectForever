@@ -37,7 +37,7 @@
                 <div class="card-image">
                 <img src="{{ asset('/image/americano.jpg') }}">
                 <span class="card-title">Fechas</span>
-                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">build</i></a>
+                <a href="{{ route('fixture.index') }}" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">build</i></a>
                 </div>
                 <div class="card-content">
                 <p>En ésta sección podrá crear, modificar y eliminar fechas para los diferentes torneos previamente creados en la sección de Torneos.</p>
