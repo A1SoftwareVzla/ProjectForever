@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fixture extends Model
 {
+    protected $fillable = [
+        'name', 'description', 'tournament_id',
+    ];
     public function tournament(){
         return $this->belongsTo(Tournament::class);
     }

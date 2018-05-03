@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,6 +165,9 @@ return [
 
         //Collective
         Collective\Html\HtmlServiceProvider::class,
+
+        //Español
+        Laraveles\Spanish\SpanishServiceProvider::class,
 
     ],
 

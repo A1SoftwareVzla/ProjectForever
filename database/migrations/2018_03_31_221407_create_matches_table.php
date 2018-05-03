@@ -20,7 +20,10 @@ class CreateMatchesTable extends Migration
             $table->integer('visitor_team')->unsigned();
             $table->dateTime('date');
             $table->integer('result')->default(99);
-            $table->integer('id_fixture')->unsigned();
+            $table->integer('fixture_id')->unsigned();
+            $table->decimal('statHome', 2, 1); // % de casa
+            $table->decimal('statVisitor', 2, 1); // % de visitante
+            $table->decimal('statTie', 2, 1); // % de empate
             
             $table->timestamps();
 
@@ -31,7 +34,7 @@ class CreateMatchesTable extends Migration
             $table->foreign('visitor_team')->references('id')->on('teams')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('id_fixture')->references('id')->on('fixtures')
+            $table->foreign('fixture_id')->references('id')->on('fixtures')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

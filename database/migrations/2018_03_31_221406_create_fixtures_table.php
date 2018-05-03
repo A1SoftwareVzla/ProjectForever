@@ -18,12 +18,12 @@ class CreateFixturesTable extends Migration
 
             $table->string('name');
             $table->string('description', 250)->nullable();
-            $table->integer('id_tournament')->unsigned();
+            $table->integer('tournament_id')->unsigned();
 
             $table->timestamps();
 
             //Foreign Keys
-            $table->foreign('id_tournament')->references('id')->on('tournaments')
+            $table->foreign('tournament_id')->references('id')->on('tournaments')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 

@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bet extends Model
 {
+    protected $fillable = [
+        'forecast_id', 'match_id', 'forecast',
+    ];
     public function match(){
         return $this->belongsTo(Match::class);
     }
-
-    //falta la relacion con la tabla group_user
+    public function forecast(){
+        return $this->belongsTo(Forecast::class);
+    }
+    
 
 }

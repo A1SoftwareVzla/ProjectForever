@@ -17,4 +17,20 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware(['auth'])->group(function(){
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/admin', function(){    // Ruta del indice de la administración de la aplicación
+        return view('admin.index');
+    })->name('admin'); 
+    Route::resource('tournament', 'TournamentController');
+    Route::resource('team', 'TeamController');
+    Route::resource('match', 'MatchController');
+    Route::resource('fixture', 'FixtureController');
+
+
+
+});
+
+
+
+

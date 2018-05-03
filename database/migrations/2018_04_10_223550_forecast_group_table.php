@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CerateGroupUserTable extends Migration
+class ForecastGroupTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,24 +13,21 @@ class CerateGroupUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_user', function (Blueprint $table) {
+        Schema::create('forecast_group', function (Blueprint $table) {
             $table->increments('id');
-
-            $table->integer('id_group')->unsigned();
-            $table->integer('id_user')->unsigned();
-            $table->integer('score')->unsigned();
-            $table->enum('administrador', ['SI', 'NO']);
+           
+            $table->integer('forecast_id')->unsigned();
+            $table->integer('group_id')->unsigned();
 
             $table->timestamps();
-
+            
             //Foreign Keys
-            $table->foreign('id_group')->references('id')->on('groups')
+            $table->foreign('forecast_id')->references('id')->on('forecasts')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('id_user')->references('id')->on('users')
+            $table->foreign('group_id')->references('id')->on('groups')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-
         });
     }
 

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\TeamStoreRequest;
+use App\Http\Requests\TeamUpdateRequest;
 
 class TeamController extends Controller
 {
@@ -14,7 +17,8 @@ class TeamController extends Controller
      */
     public function index()
     {
-        //
+        $teams = Team::orderBy('name','ASC')->paginate();
+        return view('admin.team.index')->with(compact('teams'));
     }
 
     /**
@@ -22,7 +26,7 @@ class TeamController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
     }
@@ -33,9 +37,16 @@ class TeamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TeamStoreRequest $request)
     {
-        //
+        // verificar si el short_name existe, si existe devolver error
+        $team = Team::create($request->all());
+        // images
+        if($request->file('symbol')){
+            $path = Storage::disk('public')->put('symbols', $request->file('symbol'));
+            $team->fill(['symbol' => asset($path)])->save();
+        }
+        return redirect()->route('team.index')->with('info','Equipo guardado con éxito');
     }
 
     /**
@@ -57,7 +68,8 @@ class TeamController extends Controller
      */
     public function edit(Team $team)
     {
-        //
+        //dd($team);
+        return view('admin.team.edit')->with(compact('team'));
     }
 
     /**
@@ -67,9 +79,17 @@ class TeamController extends Controller
      * @param  \App\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Team $team)
+    public function update(TeamUpdateRequest $request, Team $team)
     {
-        //
+        //dd($team);
+        $team->fill($request->all())->save();
+
+        if($request->file('symbol')){
+            $path = Storage::disk('public')->put('symbols', $request->file('symbol'));
+            $team->fill(['symbol' => asset($path)])->save();
+        }
+
+        return redirect()->route('team.edit', $team->id)->with('info','Equipo editado con éxito');
     }
 
     /**
@@ -80,6 +100,7 @@ class TeamController extends Controller
      */
     public function destroy(Team $team)
     {
-        //
+        Team::find($team->id)->delete();
+        return redirect()->route('team.index')->with('info','Equipo de '.$team->name.' fué eliminado con éxito');
     }
 }

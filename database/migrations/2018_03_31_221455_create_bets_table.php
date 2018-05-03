@@ -16,8 +16,8 @@ class CreateBetsTable extends Migration
         Schema::create('bets', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('id_user_group')->unsigned();
-            $table->integer('match')->unsigned();
+            $table->integer('forecast_id')->unsigned();
+            $table->integer('match_id')->unsigned();
             $table->integer('forecast');
             $table->integer('status')->default(99); 
             // 99 - aun no se evalua el resultado, 
@@ -30,10 +30,10 @@ class CreateBetsTable extends Migration
             $table->timestamps();
 
             //Foreign Keys
-            $table->foreign('match')->references('id')->on('matches')
+            $table->foreign('match_id')->references('id')->on('matches')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('id_user_group')->references('id')->on('group_user')
+            $table->foreign('forecast_id')->references('id')->on('forecasts')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

@@ -18,14 +18,14 @@ class CreateGroupsTable extends Migration
 
             $table->string('name', 100);
             $table->mediumText('description')->nullable();
-            $table->integer('id_tournament')->unsigned();
             $table->string('token_invitation', 100);
+            $table->integer('administrator_id')->unsigned();
 
             $table->timestamps();
 
             //Foreign Key
-
-            $table->foreign('id_tournament')->references('id')->on('tournaments')
+        
+            $table->foreign('administrator_id')->references('id')->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 

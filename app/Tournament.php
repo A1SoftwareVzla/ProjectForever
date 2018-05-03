@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tournament extends Model
 {
-    public function groups(){
-        return $this->hasMany(Group::class);
+    protected $fillable = [
+        'name', 'description', 'symbol', 'ímage',
+    ];
+    public function forecasts(){
+        return $this->hasMany(Forecast::class);
     }
     public function fixtures(){
         return $this->hasMany(Fixture::class);

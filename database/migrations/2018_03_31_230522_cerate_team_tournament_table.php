@@ -15,17 +15,17 @@ class CerateTeamTournamentTable extends Migration
     {
         Schema::create('team_tournament', function (Blueprint $table) {
             $table->increments('id');
-
-            $table->integer('id_tournament')->unsigned();
-            $table->integer('id_team')->unsigned();
+            
+            $table->integer('tournament_id')->unsigned();
+            $table->integer('team_id')->unsigned();
 
             $table->timestamps();
 
             //Foreign Keys
-            $table->foreign('id_tournament')->references('id')->on('tournaments')
+            $table->foreign('tournament_id')->references('id')->on('tournaments')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('id_team')->references('id')->on('teams')
+            $table->foreign('team_id')->references('id')->on('teams')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
