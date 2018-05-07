@@ -12,7 +12,7 @@
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="{{ asset('css/materialize.min.css') }}"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    
     <style>
     html, body {
                 background-color: #fff;
@@ -42,21 +42,26 @@
 </div>     
       
 <ul id="slide-out" class="sidenav">
-    <li><div class="user-view">
+    <li>
+    <div class="user-view">
       <div class="background">
         <img src="http://lorempixel.com/400/350/nature">
       </div>
       <!--<a href="#user"><img class="circle" src="http://lorempixel.com/100/100/sports"></a>-->
       <a href="#name"><span class="white-text name">{{ Auth::user()->name }}</span></a>
       <a href="#email"><span class="white-text email">{{ Auth::user()->email }}</span></a>
-    </div></li>
-    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-    <li><a href="#!">Second Link</a></li>
-    <li><div class="divider"></div></li>
-    <!--<li><a class="subheader">Subheader</a></li>-->
-    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+    </div>
+    </li>
+    <li><a href="{{route('admin')}}"><i class="material-icons">build</i>Menú Principal</a></li>
+    <li><div class="divider"></div></li> 
+    <li><a href="{{route('team.index')}}"><i class="material-icons">group</i>Equipos</a></li>
+    <li><a href="{{route('tournament.index')}}"><i class="material-icons">widgets</i>Torneos</a></li>
+    <li><a href="{{route('fixture.index')}}"><i class="material-icons">event</i>Fechas</a></li>
+    <li><a href="{{route('match.index')}}"><i class="material-icons">directions_walk</i>Juegos</a></li>    
+    <li><div class="divider"></div></li>    
     <li><a class="waves-effect" href="{{ route('logout') }}" 
-    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="material-icons">exit_to_app</i> {{ __('Logout') }}</a></li>
+    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="material-icons">exit_to_app</i> {{ __('Logout') }}</a>
+    </li>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
@@ -87,6 +92,21 @@
 $(document).ready(function(){
     $('.sidenav').sidenav();
     $('.fixed-action-btn').floatingActionButton();
+    $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd'  
+    });
+    $('.timepicker').timepicker({
+        default: 'now',
+        twelveHour: false, // change to 12 hour AM/PM clock from 24 hour
+        done: 'OK',
+        cancel: 'Cancelar',
+        format: "HH:ii:SS",
+    });
+    // For adding seconds (00)
+    $('.timepicker').on('change', function() {
+        let receivedVal = $(this).val();
+        $(this).val(receivedVal + ":00");
+    });    
 });       
 </script>
 </body>

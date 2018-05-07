@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Match extends Model
 {
     protected $fillable = [
-        'home_team', 'visitor_team', 'date','result','fixture_id','statHome','statVisitor','statTie',
+        'home_team', 'visitor_team', 'date','time','home_score','visitor_score','result','fixture_id','statHome','statVisitor','statTie',
     ];
     public function team(){
         return $this->belongsTo(Team::class);

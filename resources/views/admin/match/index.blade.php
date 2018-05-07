@@ -4,34 +4,38 @@
        
 <br>
 <div class="row">
-    <div class="col m9">
+    <div class="col m8">
     <div class="card">
         <div class="card-content">        
-        <span class="card-title">Listado de equipos</span>         
+        <span class="card-title">Listado de juegos</span>         
         <div class="row">
             <div class="col s12">                                 
                 <table class="highlight">
                     <thead>
                     <tr>
-                        <th>Nombre del equipo</th>
-                        <th>Abreviatura</th>
-                        <th>Icono</th>
+                        <th>Casa</th>
+                        <th colspan="3">Marcador</th>
+                        <th>Visitante</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
                         <th colspan="2"></th>    
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($teams as $team)
+                    @foreach($matchs as $match)
                     <tr>
-                        <td>{{ $team->name }}</td>
-                        <td>{{ $team->short_name }}</td>
-                        <td width="30px">
-                            <img class="responsive-img" src="{{ $team->symbol }}">
-                        </td>
+                        <td>{{ $teams[$match->home_team] }}</td>
+                        <td class="center-align">{{ $match->home_score }}</td>
+                        <td class="center-align">x</td>
+                        <td class="center-align">{{ $match->visitor_score }}</td>
+                        <td>{{ $teams[$match->visitor_team] }}</td>
+                        <td>{{ $match->date }}</td>
+                        <td>{{ $match->time }}</td>
                         <td class="center-align">                            
-                            <a href="{{ route('team.edit', $team->id) }}" class="btn-floating waves-effect waves-light orange"><i class="material-icons">edit</i></a>
+                            <a href="{{ route('match.edit', $match->id) }}" class="btn-floating waves-effect waves-light orange"><i class="material-icons">edit</i></a>
                         </td>                        
                         <td class="center-align">
-                        {{ Form::open(['route' => ['team.destroy', $team->id], 'method' => 'DELETE']) }}                           
+                        {{ Form::open(['route' => ['match.destroy', $match->id], 'method' => 'DELETE']) }}                           
                             <button class="btn-floating waves-effect waves-light red" type="submit" name="action">
                                 <i class="material-icons left">delete_forever</i>
                             </button>
@@ -46,13 +50,13 @@
         </div>        
     </div>
     </div>
-    <div class="col m3">
+    <div class="col m4">
         <div class="card">        
             <div class="card-content">
-            {!! Form::open(['route' => 'team.store', 'files' => true]) !!}
-            <span class="card-title">Agregar equipo</span>
-                @include('admin.team.partials.form')
-                <button class="btn waves-effect waves-light orange darken-1" type="submit" name="action">Agregar equipo
+            {!! Form::open(['route' => 'match.store']) !!}
+            <span class="card-title">Agregar juego</span>
+                @include('admin.match.partials.form')
+                <button class="btn waves-effect waves-light orange darken-1" type="submit" name="action">Agregar juego
                     <i class="material-icons left">add</i>
                 </button>
                 {!! Form::close() !!}

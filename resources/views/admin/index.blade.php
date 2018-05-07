@@ -50,7 +50,7 @@
                 <div class="card-image">
                 <img src="{{ asset('/image/basketball.jpg') }}">
                 <span class="card-title">Juegos</span>
-                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">build</i></a>
+                <a href="{{route('match.index')}}" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">build</i></a>
                 </div>
                 <div class="card-content">
                 <p>En ésta seción podrá crear los juegos de las diferentes fechas creadas previamente en la sección de Fechas.</p>

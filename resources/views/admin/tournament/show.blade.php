@@ -7,7 +7,7 @@
     <div class="col m8">
     <div class="card">
         <div class="card-content">        
-        <span class="card-title">Información del torneo <strong>{{$tournament->name}}</strong> <a href="{{route('tournament.index')}}" class="waves-effect waves-light btn orange darken-1"><i class="material-icons left">reply</i>Volver</a></span>
+        <span class="card-title">Información del torneo <strong>{{$tournament->name}}</strong></span>
         <div class="row">
             <div class="col s12">                                 
                 <table class="highlight">

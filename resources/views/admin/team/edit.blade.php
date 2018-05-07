@@ -20,12 +20,6 @@
         </div>
         </div>        
     </div>
-    </div>
-    <div class="col m2 right-align">
-        <a href="{{route('team.index')}}" class="waves-effect waves-light btn orange darken-1"><i class="material-icons left">reply</i>Volver</a>
-    </div> 
-    <div class="col m2 right-align">
-        <a href="{{route('admin')}}" class="waves-effect waves-light btn orange darken-1"><i class="material-icons left">reply_all</i>Menú principal</a>
     </div>   
 </div>
 

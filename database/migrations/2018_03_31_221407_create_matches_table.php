@@ -18,12 +18,15 @@ class CreateMatchesTable extends Migration
 
             $table->integer('home_team')->unsigned();
             $table->integer('visitor_team')->unsigned();
-            $table->dateTime('date');
+            $table->date('date');
+            $table->time('time');
+            $table->integer('home_score')->unsigned()->nullable();
+            $table->integer('visitor_score')->unsigned()->nullable();
             $table->integer('result')->default(99);
             $table->integer('fixture_id')->unsigned();
-            $table->decimal('statHome', 2, 1); // % de casa
-            $table->decimal('statVisitor', 2, 1); // % de visitante
-            $table->decimal('statTie', 2, 1); // % de empate
+            $table->decimal('statHome', 2, 1)->nullable(); // % de casa
+            $table->decimal('statVisitor', 2, 1)->nullable(); // % de visitante
+            $table->decimal('statTie', 2, 1)->nullable(); // % de empate
             
             $table->timestamps();
 

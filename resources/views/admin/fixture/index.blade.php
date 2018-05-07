@@ -7,7 +7,7 @@
     <div class="col m9">
     <div class="card">
         <div class="card-content">        
-        <span class="card-title">Listado de fechas <a href="{{route('admin')}}" class="waves-effect waves-light btn orange darken-1"><i class="material-icons left">reply</i>Menú principal</a></span>         
+        <span class="card-title">Listado de fechas</span>         
         <div class="row">
             <div class="col s12">                                 
                 <table class="highlight">
