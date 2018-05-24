@@ -11,13 +11,20 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert(
+        DB::table('users')->insert([
             [
-                'name' => 'José Ortega',
-                'email' => 'jjjortega@a1software.com.ve',
-                'password' => bcrypt('123'),
+                'name' => 'Dios PronostiKlo',
+                'email' => 'dios@pronostiklo.com',
+                'password' => bcrypt('fjog1978.'),
                 'gender' => 'M',
                 'timeZone' => 'GMT',
-            ]);
+            ],[
+                'name' => 'José Ortega',
+                'email' => 'jjjortega@a1software.com.ve',
+                'password' => bcrypt('123qwe'),
+                'gender' => 'M',
+                'timeZone' => 'GMT',
+            ],
+        ]);
     }
 }

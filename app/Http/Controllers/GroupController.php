@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Group;
+use App\Tournament;
+use App\Http\Requests\GroupStoreRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -14,7 +17,11 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+       //$groups = Group::Where('administrator_id', '=', Auth::user()->id)
+       //         ->orderBy('id','DESC')->get();
+       //return view('user.group.index')->with(compact('groups'));
+       //dd(Auth::user()->groups());
+       return view('user.group.index');
     }
 
     /**
@@ -24,7 +31,7 @@ class GroupController extends Controller
      */
     public function create()
     {
-        //
+        return view('user.group.create');
     }
 
     /**
@@ -33,9 +40,13 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(GroupStoreRequest $request)
     {
-        //
+        $group = Group::create($request->all());
+        $group->token_invitation = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 20);
+        $group->users()->sync(Auth::user()->id);        
+        $group->save();
+        return redirect()->route('group.index')->with('info','Grupo creado con éxito');
     }
 
     /**
@@ -46,7 +57,7 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        //
+        return view('user.group.show')->with(compact('group'));
     }
 
     /**
@@ -57,7 +68,7 @@ class GroupController extends Controller
      */
     public function edit(Group $group)
     {
-        //
+        return view('user.group.edit')->with(compact('group'));
     }
 
     /**
@@ -69,7 +80,8 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        //
+        $group->fill($request->all())->save();
+        return redirect()->route('group.edit', $group->id)->with('info','Grupo editado con éxito');
     }
 
     /**
@@ -80,6 +92,29 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
+        Group::find($group->id)->delete();
+        return redirect()->route('group.index')->with('info','Grupo '.$group->name.' fué eliminado con éxito');
     }
+
+    public function unirGrupo($token)
+    {
+        \Cache::put('invitacion', $token, 5);
+        return redirect()->route('group.add', $token);      
+    }
+
+    public function relacionarUsuario($token){
+        if($group = Group::where('token_invitation','=',$token)->first()){
+            foreach($group->users()->get() as $user){
+                if($user->id == Auth::user()->id){
+                    return redirect()->route('group.index')->with('info', 'Ya perteneces al grupo '.$group->name);
+                }
+            }
+            $group->users()->attach(Auth::user()->id);
+            $group->save();
+            return redirect()->route('group.index')->with('info', 'Se unió al grupo '.$group->name.' exitosamente.'); 
+        }else{
+            return redirect()->route('group.index')->with('info', 'El grupo ya no existe.');
+        }
+    }
+
 }

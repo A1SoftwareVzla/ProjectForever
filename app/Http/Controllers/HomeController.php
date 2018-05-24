@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Cookie;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,13 @@ class HomeController extends Controller
         if(Auth::user()->isAdministrator()){
             return redirect()->route('admin');
         }else{
-            return view('home');
+            if(\Cache::get('invitacion')){
+                $token = \Cache::get('invitacion');
+                \Cache::forget('invitacion');
+                return redirect()->route('group.add', $token);
+            }else{
+                return view('user.dashboard');  
+            }           
         }
     }
 }

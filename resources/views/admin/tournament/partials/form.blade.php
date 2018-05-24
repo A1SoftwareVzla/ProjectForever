@@ -7,7 +7,7 @@
     </div>
     <div class="row">
         <div class="input-field col s12">            
-            {{ Form::textarea('description', null, ['class' => 'validate', 'id' => 'description']) }}
+            {{ Form::textarea('description', null, ['class' => 'validate materialize-textarea', 'id' => 'description']) }}
             {{ Form::label('description', 'Descripción del torneo')}}
         </div>
     </div>

@@ -8,11 +8,8 @@ class Group extends Model
 {
     protected $fillable = [
         'name', 'description', 'administrator_id',
-    ];
+    ];    
     public function users(){
-        return $this->hasMany(User::class);
-    }
-    public function forecasts(){
-        return $this->belongsToMany(Forecast::class);
+        return $this->belongsToMany(User::class);
     }
 }

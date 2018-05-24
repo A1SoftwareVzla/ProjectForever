@@ -26,9 +26,12 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('team', 'TeamController');
     Route::resource('match', 'MatchController');
     Route::resource('fixture', 'FixtureController');
-
-
-
+    Route::resource('group', 'GroupController');
+    Route::resource('forecast', 'ForecastController');
+    Route::get('/group/add/{token}', function($token){ 
+        return view('user.group.addUserGroup')->with(compact('token'));
+    })->name('group.add');
+    Route::get('/group/addUser/{token}', 'GroupController@relacionarUsuario')->name('group.addUser');
 });
 
 
