@@ -8,6 +8,7 @@ use App\Fixture;
 use App\Match;
 use App\Forecast;
 use App\Team;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class ForecastController extends Controller
@@ -64,7 +65,8 @@ class ForecastController extends Controller
     {
         $tournament = Tournament::where('id','=', $forecast->tournament_id)->first();
         $teams = Team::all();
-        return view('user.forecast.show')->with(compact('tournament','teams'));
+        $user = User::where('id','=', Auth::user()->id)->first();
+        return view('user.forecast.show')->with(compact('tournament','teams', 'forecast', 'user'));
     }
 
     /**

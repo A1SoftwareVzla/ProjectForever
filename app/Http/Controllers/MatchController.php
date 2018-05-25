@@ -18,7 +18,7 @@ class MatchController extends Controller
      */
     public function index()
     {
-        $matchs = Match::OrderBy('date', 'DESC')->paginate();
+        $matchs = Match::OrderBy('date', 'DESC')->get();
         $fixtures = Fixture::OrderBy('id', 'DESC')->pluck('name', 'id');
         $teams = Team::OrderBy('name', 'ASC')->pluck('name','id');
         return view('admin.match.index')->with(compact('matchs', 'fixtures', 'teams'));

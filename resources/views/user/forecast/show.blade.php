@@ -11,9 +11,10 @@
         </ul>
         <div id="quiniela" class="col s12">
         
-            <h5>{{ $tournament->name }}</h5>                
-        <ul class="collapsible popout">
+            <h5>{{ $tournament->name }}</h5> 
         @foreach($tournament->fixtures as $fixture)
+        <ul class="collapsible popout">
+        
             <li>
             <div class="collapsible-header"><i class="material-icons">event</i>{{ $fixture->name }}</div>
             <div class="collapsible-body">
@@ -67,44 +68,80 @@
             @endforeach
             </div>            
             </li> 
-        @endforeach               
+                       
         </ul> 
+        @endforeach
         <br>      
         
         </div>
         <div id="ranking" class="col s12">
-        <div class="container">
-            <table class="highlight">
-            <thead>
-                <tr>
-                    <th width="5%">#</th>
-                    <th width="80%">NOMBRE DEL JUGADOR</th>
-                    <th width="10%">PTOS</th>                    
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="5%">1</td>
-                    <td width="80%">JOSE ORTEGA</td>
-                    <td width="10%">70</td>
-                </tr>
-                <tr>
-                    <td width="5%">2</td>
-                    <td width="80%">FRANKLYN ORTEGA</td>
-                    <td width="10%">67</td>
-                </tr>
-                <tr>
-                    <td width="5%">3</td>
-                    <td width="80%">JAVIER ROMERO</td>
-                    <td width="10%">63</td>
-                </tr>
-                <tr>
-                    <td width="5%">104</td>
-                    <td width="80%">CESAR LOBO</td>
-                    <td width="10%">60</td>
-                </tr>
-            </tbody>
-            </table>
+        <div class="center-align">
+        <h5>Tienes <strong>{{ $forecast->score }}</strong> puntos acumulados!</h5>
+        @foreach($user->groups()->get() as $group) 
+        <?php 
+            $position=0; 
+            $ranking = collect();
+        ?>
+
+        @foreach($group->users()->get() as $userGroup)
+            @foreach($userGroup->forecasts()->get() as $fore)
+                @if($fore->tournament_id == $forecast->tournament_id)
+                    <?php 
+                        $ranking->push(['idUsuario' => $userGroup->id,'usuario' => $userGroup->name,  'puntos' => $fore->score]);
+                    ?>       
+                @endif
+            @endforeach
+        @endforeach
+        
+        <?php
+            $rankingSorted = $ranking->sortByDesc('usuario');
+            $total = count($rankingSorted);
+            $pos=1;
+            $posFinal=1;
+            foreach($rankingSorted as $ran){
+                if($ran['idUsuario'] == Auth::user()->id){
+                    $posFinal = $pos;
+                }else{
+                    $pos = $pos + 1;
+                }
+            }                    
+        ?>
+        <ul class="collapsible popout">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">group</i>{{$group->name}}<span class="new badge orange" data-badge-caption=" ">{{$posFinal}} de {{$total}}</span></div>
+                <div class="collapsible-body">
+                    <table class="highlight">
+                    <thead>
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="80%">NOMBRE DEL JUGADOR</th>
+                            <th width="10%">PTOS</th>                    
+                        </tr>
+                    </thead>
+                    <tbody>                
+                
+                    @foreach($rankingSorted as $rank)
+                        
+                        <?php $position = $position +1; ?>
+                        @if($rank['idUsuario'] == Auth::user()->id)
+                        <tr style="color:rgb(255,164,032);font-size:20px;">
+                        @else
+                        <tr>
+                        @endif
+                            <td width="5%" class="center-align">{{ $position }}</td>
+                            <td width="80%">{{ $rank['usuario'] }}</td>
+                            <td width="10%">{{ $rank['puntos'] }}</td>
+                        </tr>                
+                        
+                    @endforeach
+               
+                    </tbody>
+                    </table>
+                </div>
+            </li> 
+        </ul>              
+        @endforeach
+        <br>
         </div>
         </div>    
     </div>

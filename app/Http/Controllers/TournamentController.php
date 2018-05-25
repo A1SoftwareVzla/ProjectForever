@@ -18,7 +18,7 @@ class TournamentController extends Controller
      */
     public function index()
     {
-        $tournaments = Tournament::orderBy('name','ASC')->paginate();
+        $tournaments = Tournament::orderBy('name','ASC')->get();
         $teams = Team::orderBy('name','ASC')->get();
         return view('admin.tournament.index')->with(compact('tournaments', 'teams'));
     }
