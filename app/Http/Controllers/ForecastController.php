@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Tournament;
+use App\Fixture;
+use App\Match;
+use App\Forecast;
+use App\Team;
+use Illuminate\Support\Facades\Auth;
 
 class ForecastController extends Controller
 {
@@ -13,7 +19,7 @@ class ForecastController extends Controller
      */
     public function index()
     {
-        //
+        return view('user.forecast.index');
     }
 
     /**
@@ -23,7 +29,9 @@ class ForecastController extends Controller
      */
     public function create()
     {
-        //
+        $tournaments = Tournament::where('active', '=', true)->pluck('name','id'); //el campo sea true
+        
+        return view('user.forecast.create')->with(compact('tournaments'));
     }
 
     /**
@@ -34,7 +42,15 @@ class ForecastController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(count(Forecast::where('user_id', '=', Auth::user()->id)->where('tournament_id', '=', $request->tournament_id)->get())){
+            return redirect()->route('forecast.index')->with('info','Ya has creado un pronóstico para este torneo.');
+        }else{        
+            $forecast = new Forecast;
+            $forecast->user_id = Auth::user()->id; 
+            $forecast->tournament_id = $request->tournament_id;                         
+            $forecast->save();
+            return redirect()->route('forecast.index')->with('info','Pronóstico creado con éxito');
+        }
     }
 
     /**
@@ -43,9 +59,12 @@ class ForecastController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    //public function show($id)
+    public function show(Forecast $forecast)
     {
-        //
+        $tournament = Tournament::where('id','=', $forecast->tournament_id)->first();
+        $teams = Team::all();
+        return view('user.forecast.show')->with(compact('tournament','teams'));
     }
 
     /**

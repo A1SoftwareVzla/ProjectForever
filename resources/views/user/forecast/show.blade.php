@@ -4,28 +4,35 @@
 
 @section('content')
 
-    <div class="col s12">
+    <div class="col s12 center-align" style="background-color:rgb(255,255,255,0.75);">
         <ul id="tabs-swipe-user" class="tabs">
             <li class="tab col s6"><a class="active" href="#quiniela">Tu pronóstico</a></li>
             <li class="tab col s6"><a href="#ranking">Ranking</a></li>
         </ul>
         <div id="quiniela" class="col s12">
-        <div class="container">
-            <!-- Inicio del bloque del forecast -->            
+        
+            <h5>{{ $tournament->name }}</h5>                
+        <ul class="collapsible popout">
+        @foreach($tournament->fixtures as $fixture)
+            <li>
+            <div class="collapsible-header"><i class="material-icons">event</i>{{ $fixture->name }}</div>
+            <div class="collapsible-body">
+            @foreach($fixture->matches as $match)
+<!-- Inicio del bloque del forecast -->            
             <div class="row valign-wrapper center-align">
                 <div class="col s3">
-                    <img class="responsive-img" src="{{asset('/symbols/RaYC4pujHDE5Frjx8Figjj3EZ7QdRw3pWcgN4vAJ.png')}}" alt="">
+                    <img class="responsive-img" src="{{ $teams[$match->home_team-1]->symbol }}" alt="">
                 </div>
                 <div class="col s6">
                     <div class="row">
                         <div class="col s4">
-                            <a class="btn tooltipped" data-position="top" data-tooltip="Gana España">1</a>
+                            <a class="btn tooltipped" data-position="top" data-tooltip="Gana {{ $teams[$match->home_team-1]->name }}">1</a>
                         </div>
                         <div class="col s4">
                             <a class="btn tooltipped" data-position="top" data-tooltip="Empatan">X</a>
                         </div>
                         <div class="col s4">
-                            <a class="btn tooltipped" data-position="top" data-tooltip="Gana Alemania">2</a>
+                            <a class="btn tooltipped" data-position="top" data-tooltip="Gana {{ $teams[$match->visitor_team-1]->name }}">2</a>
                         </div>
                     </div>
                     <div class="row">
@@ -41,24 +48,29 @@
                     </div> 
                 </div>
                 <div class="col s3">
-                    <img class="responsive-img" src="{{asset('/symbols/c5vUiDmB44hCaSZh9LPwxeH4QuiUIuJZjVq6xZcj.png')}}" alt="">
+                    <img class="responsive-img" src="{{ $teams[$match->visitor_team-1]->symbol }}" alt="">
                 </div>
             </div>
             <div class="row valign-wrapper center-align">
                 <div class="col s3">
-                        España
+                {{ $teams[$match->home_team-1]->name }}
                 </div>
                 <div class="col s6">
-                    <h7><i class="tyni material-icons">event</i> 16/05/2018 | <i class="tyni material-icons">watch_later</i> 19:00</h7>
+                    <h7><i class="tyni material-icons">event</i> {{ $match->date }} | <i class="tyni material-icons">watch_later</i> {{ $match->time }}</h7>
                 </div>
                 <div class="col s3">
-                    Alemania
+                {{ $teams[$match->visitor_team-1]->name }}
                 </div>                
             </div>  
             <div class="divider"></div>
-        <!-- fin del bloque del forecast -->          
+<!-- fin del bloque del forecast -->
+            @endforeach
+            </div>            
+            </li> 
+        @endforeach               
+        </ul> 
+        <br>      
         
-        </div>
         </div>
         <div id="ranking" class="col s12">
         <div class="container">

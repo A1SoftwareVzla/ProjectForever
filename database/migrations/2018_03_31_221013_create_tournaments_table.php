@@ -20,6 +20,8 @@ class CreateTournamentsTable extends Migration
             $table->mediumText('description')->nullable();
             $table->string('symbol', 255)->nullable();
             $table->string('image', 255)->nullable();
+            
+            $table->boolean('active')->default(true); // determina si esta disponible el campeonato
 
             $table->timestamps();
         });

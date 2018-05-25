@@ -111,6 +111,7 @@ $(document).ready(function(){
     $('.tabs').tabs();   
     $('.tooltipped').tooltip();   
     $('.modal').modal(); 
+    $('.collapsible').collapsible();
 });     
 
 </script>

@@ -17,11 +17,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-       //$groups = Group::Where('administrator_id', '=', Auth::user()->id)
-       //         ->orderBy('id','DESC')->get();
-       //return view('user.group.index')->with(compact('groups'));
-       //dd(Auth::user()->groups());
-       return view('user.group.index');
+        return view('user.group.index');
     }
 
     /**

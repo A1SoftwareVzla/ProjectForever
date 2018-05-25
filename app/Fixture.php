@@ -13,7 +13,7 @@ class Fixture extends Model
         return $this->belongsTo(Tournament::class);
     }
     public function matches(){
-        return $this->toMany(Match::class);
+        return $this->hasMany(Match::class);
     }
 
 }
