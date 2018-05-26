@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col s12 m6 offset-m3">
+        <div class="col s12">
         <div class="card">
         
         <div class="card-image">

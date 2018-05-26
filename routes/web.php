@@ -32,6 +32,12 @@ Route::middleware(['auth'])->group(function(){
         return view('user.group.addUserGroup')->with(compact('token'));
     })->name('group.add');
     Route::get('/group/addUser/{token}', 'GroupController@relacionarUsuario')->name('group.addUser');
+    Route::get('/terminos', function(){
+        return view('user.terminosServicio');
+    })->name('terminos');
+    Route::get('/help', function(){
+        return view('user.help');
+    })->name('help');
 });
 
 
