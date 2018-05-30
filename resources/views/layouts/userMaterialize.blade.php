@@ -32,7 +32,7 @@
 <div class="container">
     <div class="row">
         <div class="col s12 m8 offset-m2">
-            <a href="{{ url('/') }}" class="brand-logo center">
+            <a href="{{ route('home') }}" class="brand-logo center">
                 <img class="responsive-img" src="{{ asset('image/LogoPronostiklo.png')}}">
             </a>
         </div>

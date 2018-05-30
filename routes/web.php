@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('fixture', 'FixtureController');
     Route::resource('group', 'GroupController');
     Route::resource('forecast', 'ForecastController');
+    Route::get('/bet/store/{match_id}/{forecast_id}/{forecast}', 'BetController@store')->name('bet.store');
     Route::get('/group/add/{token}', function($token){ 
         return view('user.group.addUserGroup')->with(compact('token'));
     })->name('group.add');
@@ -37,7 +38,7 @@ Route::middleware(['auth'])->group(function(){
     })->name('terminos');
     Route::get('/help', function(){
         return view('user.help');
-    })->name('help');
+    })->name('help');    
 });
 
 

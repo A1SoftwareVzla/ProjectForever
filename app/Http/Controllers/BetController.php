@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Bet;
+use App\Match;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BetController extends Controller
@@ -12,74 +14,20 @@ class BetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function store($match_id, $forecast_id, $forecast)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Bet  $bet
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Bet $bet)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Bet  $bet
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Bet $bet)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Bet  $bet
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Bet $bet)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Bet  $bet
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Bet $bet)
-    {
-        //
-    }
+        $match = Match::where('id','=',$match_id)->first();
+        $dateNow = Carbon::now(0); //la hora actual UTC
+        $dateMatch = Carbon::parse($match->date." ".$match->time); //la hora del partido debe ser cargada en UTC
+        
+        if($dateNow->diffInMinutes($dateMatch,false) < 15 ){ // 15 son los minutos de diferencia para poder apostar
+            return "Ya no puede pronósticar este partido.".$dateNow->diffInMinutes($dateMatch,false);
+        }else{
+            $bet = Bet::updateOrCreate(
+                ['match_id' => $match_id, 'forecast_id' => $forecast_id],
+                ['forecast' => $forecast]
+            );
+            return "Pronóstico realizado con éxito.".$dateNow->diffInMinutes($dateMatch,false);    
+        }        
+    }    
 }

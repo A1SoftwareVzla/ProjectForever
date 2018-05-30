@@ -1,6 +1,43 @@
-@extends('layouts.app')
+@extends('layouts.userMaterialize')
 
 @section('content')
+<div class="container">
+<div class="row">
+    <div class="col m6 offset-m3">
+    <div class="card">
+        <div class="card-image">
+          <img src="{{asset('image/siluetaGradas.png')}}"> 
+          <span class="card-title">{{ __('Reset Password') }}</span>         
+        </div>
+        <div class="card-content">  
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
+        <form method="POST" action="{{ route('password.email') }}">
+        @csrf
+        <div class="input-field col s12">
+            <i class="material-icons prefix">account_circle</i>
+            <input name="email" value="{{ old('email') }}" id="email" type="email" class="validate" required autofocus>
+            <label for="email">{{ __('E-Mail Address') }}</label>
+            <span class="helper-text" data-error="Este campo es requerido | formato de email"></span>
+        </div>
+
+        <div class="center-align">       
+            <button class="btn waves-effect waves-light orange" type="submit" name="action">{{ __('Send Password Reset Link') }}
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+
+        </form>
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+
+<!--
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -44,4 +81,5 @@
         </div>
     </div>
 </div>
+-->
 @endsection
