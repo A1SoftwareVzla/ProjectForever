@@ -1,31 +1,25 @@
-```php
-# Laravel-specific ignores
-bootstrap/cache/
-storage/logs/
-storage/framework/
-public/storage/
-
 # Dependencies
 vendor/
-
-# Environment
-.env
-.env.local
-.env.*
 
 # Logs
 *.log
 
-# Compiled files
-*.php~
+# Environment specific settings
+.env
+.env.local
+.env.*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Cache directories
+.cache/
+*/cache/
+*.cache
 
-# OS
-.DS_Store
-Thumbs.db
-```
+# Session files
+*.sess
+sessions/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
