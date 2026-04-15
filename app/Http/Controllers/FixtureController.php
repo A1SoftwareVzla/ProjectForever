@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Fixture;
-use App\Tournament;
+use App\Models\Fixture;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
-use App\Http\Requests\FixtureStoreRequest;
-use App\Http\Requests\FixtureUpdateRequest;
+use Inertia\Inertia;
 
 
 class FixtureController extends Controller
@@ -18,9 +17,13 @@ class FixtureController extends Controller
      */
     public function index()
     {
-        $fixtures = Fixture::orderBy('name','DESC')->paginate();
-        $tournaments = Tournament::orderBy('name', 'DESC')->pluck('name','id');
-        return view('admin.fixture.index')->with(compact('fixtures', 'tournaments'));
+        $fixtures = Fixture::with('tournament')->orderBy('name','DESC')->get();
+        return Inertia::render('Fixture/Index', [
+            'fixtures' => $fixtures,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -30,7 +33,14 @@ class FixtureController extends Controller
      */
     public function create()
     {
-        //
+        $tournaments = Tournament::orderBy('name', 'DESC')->get(['id', 'name']);
+        
+        return Inertia::render('Fixture/Create', [
+            'tournaments' => $tournaments,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -39,10 +49,16 @@ class FixtureController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FixtureStoreRequest $request)
-    {        
-        $fixture = Fixture::create($request->all());        
-        return redirect()->route('fixture.index')->with('info','fecha creada con éxito');
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'tournament_id' => 'required|exists:tournaments,id',
+        ]);
+
+        $fixture = Fixture::create($request->all());
+        
+        return redirect()->route('fixture.index')->with('success', 'Fecha creada con éxito');
     }
 
     /**
@@ -53,7 +69,14 @@ class FixtureController extends Controller
      */
     public function show(Fixture $fixture)
     {
-        //
+        $fixture->load('tournament');
+        
+        return Inertia::render('Fixture/Show', [
+            'fixture' => $fixture,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -64,8 +87,16 @@ class FixtureController extends Controller
      */
     public function edit(Fixture $fixture)
     {
-        $tournaments = Tournament::orderBy('name', 'DESC')->pluck('name','id');
-        return view('admin.fixture.edit')->with(compact('fixture', 'tournaments'));
+        $fixture->load('tournament');
+        $tournaments = Tournament::orderBy('name', 'DESC')->get(['id', 'name']);
+        
+        return Inertia::render('Fixture/Edit', [
+            'fixture' => $fixture,
+            'tournaments' => $tournaments,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -75,11 +106,17 @@ class FixtureController extends Controller
      * @param  \App\Fixture  $fixture
      * @return \Illuminate\Http\Response
      */
-    public function update(FixtureUpdateRequest $request, Fixture $fixture)
+    public function update(Request $request, Fixture $fixture)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'tournament_id' => 'required|exists:tournaments,id',
+        ]);
+
         $fixture = Fixture::find($fixture->id);
         $fixture->fill($request->all())->save();
-        return redirect()->route('fixture.edit', $fixture->id)->with('info','Fecha actualizada con éxito');
+        
+        return redirect()->route('fixture.index')->with('success', 'Fecha actualizada con éxito');
     }
 
     /**
@@ -91,6 +128,6 @@ class FixtureController extends Controller
     public function destroy(Fixture $fixture)
     {
         Fixture::find($fixture->id)->delete();
-        return redirect()->route('fixture.index')->with('info','fecha '.$fixture->name.' fué eliminada con éxito');    
+        return redirect()->route('fixture.index')->with('success', 'Fecha '.$fixture->name.' fué eliminada con éxito');    
     }
 }

@@ -2,120 +2,130 @@
 
 namespace App\Http\Controllers;
 
-use App\Tournament;
-use App\Team;
+use App\Models\Tournament;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\TournamentUpdateRequest;
-use App\Http\Requests\TournamentStoreRequest;
+use Inertia\Inertia;
 
 class TournamentController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         $tournaments = Tournament::orderBy('name','ASC')->get();
-        $teams = Team::orderBy('name','ASC')->get();
-        return view('admin.tournament.index')->with(compact('tournaments', 'teams'));
+        return Inertia::render('Tournament/Index', [
+            'tournaments' => $tournaments,
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
+        $teams = Team::orderBy('name','ASC')->get();
+        return Inertia::render('Tournament/Create', [
+            'teams' => $teams,
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(TournamentStoreRequest $request)
+    public function store(Request $request)
     {
-       // verificar si el short_name existe, si existe devolver error
-        $tournament = Tournament::create($request->all());
-        // images
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'active' => ['boolean'],
+            'symbol' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'image', 'max:2048'],
+            'teams' => ['array'],
+        ]);
+
+        $tournament = Tournament::create($validated);
+        
         if($request->file('symbol')){
-            $path = Storage::disk('public')->put('image', $request->file('symbol'));
-            $tournament->fill(['symbol' => asset($path)])->save();
+            $path = Storage::disk('public')->put('symbols', $request->file('symbol'));
+            $tournament->update(['symbol' => asset($path)]);
         }
         if($request->file('image')){
-            $path = Storage::disk('public')->put('image', $request->file('image'));
-            $tournament->fill(['image' => asset($path)])->save();
+            $path = Storage::disk('public')->put('images', $request->file('image'));
+            $tournament->update(['image' => asset($path)]);
         }
-        //sincronizacion de equipos del torneo
-        $tournament->teams()->sync($request->get('teams'));
 
-        return redirect()->route('tournament.index')->with('info','Torneo guardado con éxito');
+        if($request->has('teams')){
+            $tournament->teams()->sync($request->get('teams'));
+        }
+
+        return redirect()->route('tournament.index')->with('success', 'Torneo guardado con éxito');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Tournament  $tournament
-     * @return \Illuminate\Http\Response
      */
     public function show(Tournament $tournament)
     {
-        return view('admin.tournament.show')->with(compact('tournament'));
+        $tournament->load('teams');
+        return Inertia::render('Tournament/Show', [
+            'tournament' => $tournament,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Tournament  $tournament
-     * @return \Illuminate\Http\Response
      */
     public function edit(Tournament $tournament)
     {
         $teams = Team::orderBy('name','ASC')->get();
-        return view('admin.tournament.edit')->with(compact('tournament', 'teams'));
+        $tournament->load('teams');
+        return Inertia::render('Tournament/Edit', [
+            'tournament' => $tournament,
+            'teams' => $teams,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Tournament  $tournament
-     * @return \Illuminate\Http\Response
      */
-    public function update(TournamentUpdateRequest $request, Tournament $tournament)
+    public function update(Request $request, Tournament $tournament)
     {
-        $tournament = Tournament::find($tournament->id);
-        $tournament->fill($request->all())->save();
-        // images
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'active' => ['boolean'],
+            'symbol' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'image', 'max:2048'],
+            'teams' => ['array'],
+        ]);
+
+        $tournament->update($validated);
+        
         if($request->file('symbol')){
-            $path = Storage::disk('public')->put('image', $request->file('symbol'));
-            $tournament->fill(['symbol' => asset($path)])->save();
+            $path = Storage::disk('public')->put('symbols', $request->file('symbol'));
+            $tournament->update(['symbol' => asset($path)]);
         }
         if($request->file('image')){
-            $path = Storage::disk('public')->put('image', $request->file('image'));
-            $tournament->fill(['image' => asset($path)])->save();
+            $path = Storage::disk('public')->put('images', $request->file('image'));
+            $tournament->update(['image' => asset($path)]);
         }
-        //sincronizacion de equipos del torneo
-        $tournament->teams()->sync($request->get('teams'));
 
-        return redirect()->route('tournament.edit', $tournament->id)->with('info','Torneo actualizado con éxito');
+        if($request->has('teams')){
+            $tournament->teams()->sync($request->get('teams'));
+        }
+
+        return redirect()->route('tournament.edit', $tournament->id)->with('success', 'Torneo actualizado con éxito');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Tournament  $tournament
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Tournament $tournament)
     {
-        Tournament::find($tournament->id)->delete();
-        return redirect()->route('tournament.index')->with('info','Torneo '.$tournament->name.' fué eliminado con éxito');
+        $tournament->delete();
+        return redirect()->route('tournament.index')->with('success', 'Torneo eliminado con éxito');
     }
 }

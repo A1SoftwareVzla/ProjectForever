@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Tournament;
-use App\Fixture;
-use App\Match;
-use App\Forecast;
-use App\Team;
-use App\User;
-use App\Bet;
+use App\Models\Tournament;
+use App\Models\Fixture;
+use App\Models\Match;
+use App\Models\Forecast;
+use App\Models\Team;
+use App\Models\User;
+use App\Models\Bet;
 use Illuminate\Support\Facades\Auth;
 
 class ForecastController extends Controller

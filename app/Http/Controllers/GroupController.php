@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Group;
-use App\Tournament;
-use App\Http\Requests\GroupStoreRequest;
+use App\Models\Group;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
@@ -17,7 +17,14 @@ class GroupController extends Controller
      */
     public function index()
     {
-        return view('user.group.index');
+        $groups = Group::with('users', 'tournament')->orderBy('name', 'ASC')->get();
+        
+        return Inertia::render('Group/Index', [
+            'groups' => $groups,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -27,7 +34,14 @@ class GroupController extends Controller
      */
     public function create()
     {
-        return view('user.group.create');
+        $tournaments = Tournament::orderBy('name', 'DESC')->get(['id', 'name']);
+        
+        return Inertia::render('Group/Create', [
+            'tournaments' => $tournaments,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -36,13 +50,20 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(GroupStoreRequest $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'tournament_id' => 'nullable|exists:tournaments,id',
+        ]);
+
         $group = Group::create($request->all());
         $group->token_invitation = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 20);
         $group->users()->sync(Auth::user()->id);        
         $group->save();
-        return redirect()->route('group.index')->with('info','Grupo creado con éxito');
+        
+        return redirect()->route('group.index')->with('success', 'Grupo creado con éxito');
     }
 
     /**
@@ -53,7 +74,14 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        return view('user.group.show')->with(compact('group'));
+        $group->load('users', 'tournament');
+        
+        return Inertia::render('Group/Show', [
+            'group' => $group,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -64,7 +92,16 @@ class GroupController extends Controller
      */
     public function edit(Group $group)
     {
-        return view('user.group.edit')->with(compact('group'));
+        $group->load('tournament');
+        $tournaments = Tournament::orderBy('name', 'DESC')->get(['id', 'name']);
+        
+        return Inertia::render('Group/Edit', [
+            'group' => $group,
+            'tournaments' => $tournaments,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -76,8 +113,15 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'tournament_id' => 'nullable|exists:tournaments,id',
+        ]);
+
         $group->fill($request->all())->save();
-        return redirect()->route('group.edit', $group->id)->with('info','Grupo editado con éxito');
+        
+        return redirect()->route('group.index')->with('success', 'Grupo editado con éxito');
     }
 
     /**
@@ -89,7 +133,7 @@ class GroupController extends Controller
     public function destroy(Group $group)
     {
         Group::find($group->id)->delete();
-        return redirect()->route('group.index')->with('info','Grupo '.$group->name.' fué eliminado con éxito');
+        return redirect()->route('group.index')->with('success', 'Grupo '.$group->name.' fué eliminado con éxito');
     }
 
     public function unirGrupo($token)

@@ -1,13 +1,56 @@
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
-/.idea
-/.vscode
-/.vagrant
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
+```
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+public/build/
+
+# Cache directories
+.cache/
+.vite/
+node/.vite/
+
+# Environment variables
 .env
+.env.local
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# PHP
+*.php~
+.php_cs.cache
+
+# Laravel specific
+storage/
+bootstrap/cache/
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Python cache (if any Python files exist in the project)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+```

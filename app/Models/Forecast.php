@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Forecast extends Model
+{
+    protected $fillable = [
+        'user_id', 'score', 'tournament_id',
+    ];
+    public function tournament(){
+        return $this->belongsTo(\App\Models\Tournament::class);
+    }
+    public function bets(){
+        return $this->hasMany(\App\Models\Bet::class);
+    }
+    public function user(){
+        return $this->belongsTo(\App\Models\User::class);
+    }
+}
