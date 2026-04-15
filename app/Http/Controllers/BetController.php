@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Bet;
-use App\Match;
+use App\Models\Bet;
+use App\Models\Match;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

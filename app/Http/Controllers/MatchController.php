@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Match;
-use App\Fixture;use App\Team;
+use App\Models\Match;
+use App\Models\Fixture;
+use App\Models\Team;
 use Illuminate\Http\Request;
-use App\Http\Requests\MatchStoreRequest;
-use App\Http\Requests\MatchUpdateRequest;
+use Inertia\Inertia;
 
 
 class MatchController extends Controller
@@ -18,10 +18,13 @@ class MatchController extends Controller
      */
     public function index()
     {
-        $matchs = Match::OrderBy('date', 'DESC')->get();
-        $fixtures = Fixture::OrderBy('id', 'DESC')->pluck('name', 'id');
-        $teams = Team::OrderBy('name', 'ASC')->pluck('name','id');
-        return view('admin.match.index')->with(compact('matchs', 'fixtures', 'teams'));
+        $matchs = Match::with(['fixture', 'localTeam', 'visitorTeam'])->orderBy('date', 'DESC')->get();
+        return Inertia::render('Match/Index', [
+            'matches' => $matchs,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -31,7 +34,16 @@ class MatchController extends Controller
      */
     public function create()
     {
-        //
+        $fixtures = Fixture::orderBy('id', 'DESC')->get(['id', 'name']);
+        $teams = Team::orderBy('name', 'ASC')->get(['id', 'name', 'short_name']);
+        
+        return Inertia::render('Match/Create', [
+            'fixtures' => $fixtures,
+            'teams' => $teams,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -40,11 +52,19 @@ class MatchController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(MatchStoreRequest $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'fixture_id' => 'required|exists:fixtures,id',
+            'local_team_id' => 'required|exists:teams,id',
+            'visitor_team_id' => 'required|exists:teams,id|different:local_team_id',
+            'date' => 'required|date',
+            'result' => 'nullable|string|max:20',
+        ]);
+
         $match = Match::create($request->all());
         
-        return redirect()->route('match.index')->with('info','Juego guardado con éxito');
+        return redirect()->route('match.index')->with('success', 'Juego guardado con éxito');
     }
 
     /**
@@ -55,7 +75,14 @@ class MatchController extends Controller
      */
     public function show(Match $match)
     {
-        //
+        $match->load(['fixture', 'localTeam', 'visitorTeam']);
+        
+        return Inertia::render('Match/Show', [
+            'match' => $match,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -66,9 +93,18 @@ class MatchController extends Controller
      */
     public function edit(Match $match)
     {
-        $teams = Team::orderBy('name','ASC')->pluck('name', 'id');
-        $fixtures = Fixture::OrderBy('id', 'DESC')->pluck('name', 'id');
-        return view('admin.match.edit')->with(compact('match', 'teams', 'fixtures'));
+        $match->load(['fixture', 'localTeam', 'visitorTeam']);
+        $teams = Team::orderBy('name','ASC')->get(['id', 'name', 'short_name']);
+        $fixtures = Fixture::orderBy('id', 'DESC')->get(['id', 'name']);
+        
+        return Inertia::render('Match/Edit', [
+            'match' => $match,
+            'teams' => $teams,
+            'fixtures' => $fixtures,
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     /**
@@ -78,12 +114,19 @@ class MatchController extends Controller
      * @param  \App\Match  $match
      * @return \Illuminate\Http\Response
      */
-    public function update(MatchUpdateRequest $request, Match $match)
+    public function update(Request $request, Match $match)
     {
+        $request->validate([
+            'fixture_id' => 'required|exists:fixtures,id',
+            'local_team_id' => 'required|exists:teams,id',
+            'visitor_team_id' => 'required|exists:teams,id|different:local_team_id',
+            'date' => 'required|date',
+            'result' => 'nullable|string|max:20',
+        ]);
+
         $match->fill($request->all())->save();
-        $teams = Team::orderBy('name','ASC')->pluck('name', 'id');
-        $fixtures = Fixture::OrderBy('id', 'DESC')->pluck('name', 'id');
-        return redirect()->route('match.edit', $match->id)->with('info','Juego editado con éxito');
+        
+        return redirect()->route('match.index')->with('success', 'Juego editado con éxito');
     }
 
     /**
@@ -95,6 +138,6 @@ class MatchController extends Controller
     public function destroy(Match $match)
     {
         Match::find($match->id)->delete();
-        return redirect()->route('match.index')->with('info',' El juego fué eliminado con éxito');
+        return redirect()->route('match.index')->with('success', 'El juego fué eliminado con éxito');
     }
 }
