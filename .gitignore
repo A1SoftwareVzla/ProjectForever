@@ -1,56 +1,31 @@
-```
+```php
+# Laravel-specific ignores
+bootstrap/cache/
+storage/logs/
+storage/framework/
+public/storage/
+
 # Dependencies
-node_modules/
 vendor/
 
-# Build outputs
-dist/
-build/
-public/build/
-
-# Cache directories
-.cache/
-.vite/
-node/.vite/
-
-# Environment variables
+# Environment
 .env
 .env.local
 .env.*
 
-# IDE files
+# Logs
+*.log
+
+# Compiled files
+*.php~
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-
-# PHP
-*.php~
-.php_cs.cache
-
-# Laravel specific
-storage/
-bootstrap/cache/
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Python cache (if any Python files exist in the project)
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
 ```
